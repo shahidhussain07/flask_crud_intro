@@ -21,8 +21,13 @@ class Todo(db.Model):
         return f'<Task {self.id}>'
 
 
+with app.app_context():
+    db.create_all()
+
+
 @app.route('/', methods = ['GET', 'POST']) # homepage route
 def home():
+    # add a task
     if request.method == "POST":
         task_content = request.form['content']
         new_task = Todo(content=task_content)
@@ -30,8 +35,10 @@ def home():
             db.session.add(new_task)
             db.session.commit()
             return redirect('/')
-        except:
+        except Exception as e:
+            print(f"ERROR :{e}")
             return 'There was an issue adding your task'
+    # see all current tasks
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
         return render_template('index.html', tasks=tasks)  # render index.html page
@@ -65,7 +72,4 @@ def update(id):
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-        
     app.run(debug=True) #start the flask server

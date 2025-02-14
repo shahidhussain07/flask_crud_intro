@@ -72,4 +72,4 @@ def update(id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True) #start the flask server
+    app.run(debug=True, port=3000) #start the flask server
